@@ -2775,3 +2775,60 @@ textarea,
     transition-duration: 0s !important;
   }
 }
+
+
+
+.error {
+    border-color: #ffbbbb;
+    background-color: rgba(255, 0, 0, 0.1);
+}
+
+
+
+
+.btn2 {
+  background-color: aliceblue;
+  padding: 0px 8px;
+  border-radius: 4px;
+  border: 1px solid #015887;
+  text-decoration: none;
+  text-align: center;
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+
+}
+
+.btn2:hover,
+.btn2:focus {
+  background-color: rgb(176, 203, 226);
+}
+
+.btn2:focus {
+  --pico-box-shadow: var(--pico-button-hover-box-shadow, 0 0 0 rgba(0, 0, 0, 0)), 0 0 0 var(--pico-outline-width) var(--pico-primary-focus);
+}
+
+
+.delb {
+  color: white;
+    background-color: #c51414;
+    border: 1px dotted #c51414;
+}
+
+
+.warnings {
+  display: flex;
+  border: 1px solid rgb(165, 164, 76);
+  
+
+  border-radius: 4px;
+  background-color: rgb(250, 248, 228);
+  padding: 8px 24px;
+  padding-top: 20px;
+}
+
+.warnings > div > ul > li::marker {
+ color: #9a7702;
+}
+

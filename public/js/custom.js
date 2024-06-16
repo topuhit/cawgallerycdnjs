@@ -164,7 +164,8 @@ var CawCart = function(){
 				plugins: [lgThumbnail, lgZoom],
 				selector: '.lg-item',
 				thumbnail:true,
-				exThumbImage: 'data-src'
+				exThumbImage: 'data-src',
+				preload: 1
             });
 		}
 		if(jQuery('#lightgallery2').length > 0){
