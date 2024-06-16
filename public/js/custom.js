@@ -970,240 +970,141 @@ var CawCart = function(){
 }();
 
 
-/* Document.ready Start */	
-jQuery(document).ready(function() {
-    'use strict';
-	
+/* Document.ready Start */
+jQuery(document).ready(function () {
+	'use strict';
 	CawCart.init();
-	
-	$('a[data-bs-toggle="tab"]').click(function(){
+	$('a[data-bs-toggle="tab"]').click(function () {
 		// todo remove snippet on bootstrap v4
-		$('a[data-bs-toggle="tab"]').click(function() {
-		  $($(this).attr('href')).show().addClass('show active').siblings().hide();
+		$('a[data-bs-toggle="tab"]').click(function () {
+			$($(this).attr('href')).show().addClass('show active').siblings().hide();
 		})
-	});	
-		
-	jQuery('.navicon').on('click',function(){
+	});
+	jQuery('.navicon').on('click', function () {
 		$(this).toggleClass('open');
 	});
-	
 });
 /* Document.ready END */
-
 /* Window Load START */
-jQuery(window).on('load',function () {
-	'use strict'; 
-	
+jQuery(window).on('load', function () {
+	'use strict';
 	CawCart.load();
-	
-	setTimeout(function(){
+	setTimeout(function () {
 		jQuery('#loading-area').remove();
 	}, 10);
-	
 });
 /*  Window Load END */
-
 /* Window Resize START */
-jQuery(window).on('resize',function () {
-	'use strict'; 
+jQuery(window).on('resize', function () {
+	'use strict';
 	CawCart.resize();
 });
 /*  Window Resize END */
-
-
-
-
-
-
 const searchInputtopSearch = document.querySelector('input[name="topSearch"]');
 const submitButtontopSearch = document.querySelector('button[name="topSearchButton"]');
 const topSearchForm = document.getElementById('topSearchForm');
-
-
-
-
-
 searchInputtopSearch.addEventListener('keyup', (event) => {
-  if (event.key === 'Enter') {
-    handleSearchtopSearch();
-  }
+	if (event.key === 'Enter') {
+		handleSearchtopSearch();
+	}
 });
-
 submitButtontopSearch.addEventListener('click', handleSearchtopSearch);
-
-
-topSearchForm.addEventListener('submit', function(event) {
+topSearchForm.addEventListener('submit', function (event) {
 	event.preventDefault(); // Prevent the form from submitting
 	handleSearchtopSearch();
-
-  });
-
-
-
-
+});
 function handleSearchtopSearch() {
 	const searchQuerytopSearch = searchInputtopSearch.value.trim();
 	if (searchQuerytopSearch) {
-	  const searchURLtopSearch = new URL("/shop", window.location.origin); // Create a new URL object with the desired path and origin
-	  searchURLtopSearch.searchParams.set('q', searchQuerytopSearch); // Set the search parameter 'q' with the search query
-	  window.location.href = searchURLtopSearch.toString(); // Uncomment this line to navigate to the new URL
-	  console.log(searchURLtopSearch.toString()); // Log the constructed URL
+		const searchURLtopSearch = new URL("/shop", window.location.origin); // Create a new URL object with the desired path and origin
+		searchURLtopSearch.searchParams.set('q', searchQuerytopSearch); // Set the search parameter 'q' with the search query
+		window.location.href = searchURLtopSearch.toString(); // Uncomment this line to navigate to the new URL
+		console.log(searchURLtopSearch.toString()); // Log the constructed URL
 	}
-  }
-
-
-
-
+}
 // add to cart section
-
-  $(document).ready(function() {
-
+$(document).ready(function () {
 	justloadcurrentcartlist()
-
-
-
-	
-
-
-	$('#generatedcartitems').on('click', "li > div > a.removefromcartbutton", function(e) {
-
-
+	$('#generatedcartitems').on('click', "li > div > a.removefromcartbutton", function (e) {
 		// Prevent the default link behavior
 		e.preventDefault();
-		
 		// Get the value from the data attribute
 		var value = $(this).data('value');
 		console.log(value)
-		
-  
 		// Call your custom function with the value
 		removefromcartlist(value);
-	  });
-
-
-
-	
-	$('.addtocartbutton').on('click', function(e) {
-	  // Prevent the default link behavior
-	  e.preventDefault();
-	  
-	  // Get the value from the data attribute
-	  var value = $(this).data('value');
-	  
-	  handleCartCookie()
-
-	  // Call your custom function with the value
-	  addtocartqueryfetch(value);
 	});
-  });
-  
-
-
-
-
-  // Your custom function
-  function addtocartqueryfetch(value) {
-			console.log("Link clicked with value:", value);
-
-			// Define the cookie value
-			const addThisItemtoCart = value;
-
-			// Make a POST request using jQuery's $.post() method
-			$.post("/api/frontendinformation", { addThisItemtoCart: addThisItemtoCart, operation: "addtocart" }, function(data) {
-			// Assuming 'data' is an array of objects
-
-			if(data.status == 1){
-				msgDiv = '<div class="gen alert dz-alert alert-success">'+data.msg+'</div>';
-				$('.dzSubscribeMsg').html(msgDiv);
-				
-				setTimeout(function(){
-					$('.dzSubscribeMsg .alert').hide(0);
-				}, 5000);
-			}
-
-			let tempdata = data.items
-
-			// console.log(data.items)
-
-			if (Array.isArray(tempdata)) {
-
-				renderList(tempdata)
-
-			} else {
-				console.error("Received data is not an array:");
-			}
-			})
-			.fail(function(xhr, status, error) {
-			console.error("Error fetching data:", error);
-			});
-
-
-	
-  }
-
-
-
-  function justloadcurrentcartlist() {
-
-
-
-	// Make a POST request using jQuery's $.post() method
-	$.post("/api/frontendinformation", {  operation: "getallcartitems" }, function(data) {
-	// Assuming 'data' is an array of objects
-
-
-	let tempdata = data.items
-
-	// console.log(data.items)
-
-	if (Array.isArray(tempdata)) {
-
-		renderList(tempdata)
-
-	} else {
-		console.error("Received data is not an array:");
-	}
-	})
-	.fail(function(xhr, status, error) {
-	console.error("Error fetching data:", error);
+	$('.addtocartbutton').on('click', function (e) {
+		// Prevent the default link behavior
+		e.preventDefault();
+		// Get the value from the data attribute
+		var value = $(this).data('value');
+		handleCartCookie()
+		// Call your custom function with the value
+		addtocartqueryfetch(value);
 	});
-
-
-
-}
-
-
-
-function removefromcartlist(value) {
-
+});
+// Your custom function
+function addtocartqueryfetch(value) {
+	console.log("Link clicked with value:", value);
 	// Define the cookie value
 	const addThisItemtoCart = value;
-
 	// Make a POST request using jQuery's $.post() method
-	$.post("/api/frontendinformation", { addThisItemtoCart: addThisItemtoCart, operation: "removefromcartlist" }, function(data) {
-	// Assuming 'data' is an array of objects
-
-
-	let tempdata = data.items
-
-	// console.log(data.items)
-
-	if (Array.isArray(tempdata)) {
-
-		renderList(tempdata)
-
-	} else {
-		console.error("Received data is not an array:");
-	}
+	$.post("/api/frontendinformation", { addThisItemtoCart: addThisItemtoCart, operation: "addtocart" }, function (data) {
+		// Assuming 'data' is an array of objects
+		if (data.status == 1) {
+			msgDiv = '<div class="gen alert dz-alert alert-success">' + data.msg + '</div>';
+			$('.dzSubscribeMsg').html(msgDiv);
+			setTimeout(function () {
+				$('.dzSubscribeMsg .alert').hide(0);
+			}, 5000);
+		}
+		let tempdata = data.items
+		// console.log(data.items)
+		if (Array.isArray(tempdata)) {
+			renderList(tempdata)
+		} else {
+			console.error("Received data is not an array:");
+		}
 	})
-	.fail(function(xhr, status, error) {
-	console.error("Error fetching data:", error);
-	});
-
-
-
+		.fail(function (xhr, status, error) {
+			console.error("Error fetching data:", error);
+		});
 }
-
+function justloadcurrentcartlist() {
+	// Make a POST request using jQuery's $.post() method
+	$.post("/api/frontendinformation", { operation: "getallcartitems" }, function (data) {
+		// Assuming 'data' is an array of objects
+		let tempdata = data.items
+		// console.log(data.items)
+		if (Array.isArray(tempdata)) {
+			renderList(tempdata)
+		} else {
+			console.error("Received data is not an array:");
+		}
+	})
+		.fail(function (xhr, status, error) {
+			console.error("Error fetching data:", error);
+		});
+}
+function removefromcartlist(value) {
+	// Define the cookie value
+	const addThisItemtoCart = value;
+	// Make a POST request using jQuery's $.post() method
+	$.post("/api/frontendinformation", { addThisItemtoCart: addThisItemtoCart, operation: "removefromcartlist" }, function (data) {
+		// Assuming 'data' is an array of objects
+		let tempdata = data.items
+		// console.log(data.items)
+		if (Array.isArray(tempdata)) {
+			renderList(tempdata)
+		} else {
+			console.error("Received data is not an array:");
+		}
+	})
+		.fail(function (xhr, status, error) {
+			console.error("Error fetching data:", error);
+		});
+}
 
 
   
@@ -1232,27 +1133,19 @@ function renderList(tempdata) {
 			
 
 `).join('');
-
 // Create the full list HTML
 const listHTML = `${listItems}`;
-
 let subtotal = 0
 const tempsub = tempdata.map(item =>{
 	subtotal += item.currentPrice
-
 })
-
-
 // Replace the content of an HTML element (e.g., with id 'data-container')
 $('#generatedcartitems').html(listHTML);
 $('#totalcartitems').text(tempdata.length);
 $('#totalcartitems2').text(tempdata.length);
 $('#subtotalamount').text("£ " + subtotal);
-
 }
-
-
-  function generateRandomString(length) {
+function generateRandomString(length) {
 	const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 	let result = '';
 	for (let i = 0; i < length; i++) {
@@ -1260,57 +1153,41 @@ $('#subtotalamount').text("£ " + subtotal);
 	}
 	return result;
 }
-
-
-
 // Main function to handle the cart cookie
 function handleCartCookie() {
 	// Check if the cookie exists
 	let cartCookie = getCookie('cartcookie');
-
 	if (cartCookie) {
 		console.log("Cart Cookie found:", cartCookie);
-
 		// You can use the cartCookie value here...
 	} else {
 		// Cookie not found, generate a new one
 		cartCookie = generateRandomString(16);
-		
 		// Set the cookie to expire in 30 days
 		setCookie('cartcookie', cartCookie, 30);
-		
 		console.log("New Cart Cookie set:", cartCookie);
-		
 	}
-
 	// Now you can use cartCookie value in your application
 	// For example, send it with fetch requests, display it, etc.
 }
-
-
-
-
-        // Function to get a cookie by name
-        function getCookie(name) {
-            let cookieArr = document.cookie.split(';');
-            for(let i = 0; i < cookieArr.length; i++) {
-                let cookiePair = cookieArr[i].split('=');
-                if(name == cookiePair[0].trim()) {
-                    return decodeURIComponent(cookiePair[1]);
-                }
-            }
-            return null;
-        }
-
-
-
-		        // Function to set a cookie
-				function setCookie(name, value, days) {
-					let expires = "";
-					if (days) {
-						let date = new Date();
-						date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-						expires = "; expires=" + date.toUTCString();
-					}
-					document.cookie = name + "=" + encodeURIComponent(value || "")  + expires + "; path=/";
-				}
+// Function to get a cookie by name
+function getCookie(name) {
+	let cookieArr = document.cookie.split(';');
+	for (let i = 0; i < cookieArr.length; i++) {
+		let cookiePair = cookieArr[i].split('=');
+		if (name == cookiePair[0].trim()) {
+			return decodeURIComponent(cookiePair[1]);
+		}
+	}
+	return null;
+}
+// Function to set a cookie
+function setCookie(name, value, days) {
+	let expires = "";
+	if (days) {
+		let date = new Date();
+		date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+		expires = "; expires=" + date.toUTCString();
+	}
+	document.cookie = name + "=" + encodeURIComponent(value || "") + expires + "; path=/";
+}
