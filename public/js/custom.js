@@ -1116,7 +1116,7 @@ function renderList(tempdata) {
 				<li>
 					<div class="cart-widget">
 						<div class="dz-media me-3">
-							<img loading="lazy" src="https://s3.tebi.io/testbuckethello/90x90-${item.coverImage}" alt="">
+							<img loading="lazy" src="https://s3.tebi.io/cawgallery/90x90-${item.coverImage}" alt="">
 						</div>
 						<div class="cart-content">
 							<h6 class="title"><a href="/artworks/${item.seoUrl}">${item.title}</a></h6>
