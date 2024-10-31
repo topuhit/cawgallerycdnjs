@@ -364,6 +364,18 @@ var CawCartCarousel = function(){
 					swiper: swiper,
 				},
 			});
+
+
+			jQuery('.product-gallery-swiper2').hover(
+				function() {
+					swiper2.autoplay.stop();
+				},
+				function() {
+					swiper2.autoplay.start();
+				}
+			);
+
+			
 		}
 	}
 

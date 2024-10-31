@@ -200,6 +200,16 @@ var CawCart = function(){
 				exThumbImage: 'data-src'
             });
 		}
+
+		if(jQuery('#lightgalleryExhibition').length > 0){
+			lightGallery(document.getElementById('lightgalleryExhibition'), {
+				plugins: [lgZoom],
+				selector: '.lg-item',
+				thumbnail:false,
+				exThumbImage: 'data-src',
+				preload: 1
+            });
+		}
 	}
 	
 	/* Magnific Popup ============ */
@@ -934,6 +944,9 @@ var CawCart = function(){
 }();
 
 
+let currencySelected = getCookie('currency');
+
+
 /* Document.ready Start */
 jQuery(document).ready(function () {
 	'use strict';
@@ -1007,7 +1020,46 @@ $(document).ready(function () {
 		// Call your custom function with the value
 		addtocartqueryfetch(value);
 	});
+
+
+	$('.subscribecawemail').on('submit', function (e) {
+		// Prevent the default link behavior
+		e.preventDefault();
+		// Get the value from the data attribute
+		var formData = $(this).serialize();
+
+		// console.log(formData)
+
+		subscribecawemailPOST(formData);
+	});
+
+
 });
+
+
+// Your custom function
+function subscribecawemailPOST(value) {
+
+	const addThisItemtoCart = value;
+
+	$.post("/api/subscribecawemail", addThisItemtoCart, function (data) {
+		// Assuming 'data' is an array of objects
+		if (data.status == 1) {
+			msgDiv = '<div class="gen alert dz-alert alert-success">' + data.msg + '</div>';
+			$('.dzSubscribeMsg').html(msgDiv);
+			setTimeout(function () {
+				$('.dzSubscribeMsg .alert').hide(0);
+			}, 5000);
+		}
+
+	})
+		.fail(function (xhr, status, error) {
+			console.error("Error fetching data:", error);
+		});
+}
+
+
+
 // Your custom function
 function addtocartqueryfetch(value) {
 	console.log("Link clicked with value:", value);
@@ -1071,6 +1123,16 @@ function removefromcartlist(value) {
 }
 
 
+function getBaseUrl(value) {
+	console.log(value)
+  if (value.startsWith("https://images.ctfassets.net")) {
+    return value;
+  } else {
+    return "https://s3.tebi.io/cawgallery/90x90-" + value;
+  }
+}
+
+
   
 function renderList(tempdata) {
 			  // Create an HTML list using template literals
@@ -1080,13 +1142,13 @@ function renderList(tempdata) {
 				<li>
 					<div class="cart-widget">
 						<div class="dz-media me-3">
-							<img loading="lazy" src="https://s3.tebi.io/cawgallery/90x90-${item.coverImage}" alt="">
+							<img loading="lazy" src="${getBaseUrl(item.coverImage)}" alt="">
 						</div>
 						<div class="cart-content">
 							<h6 class="title"><a href="/artworks/${item.seoUrl}">${item.title}</a></h6>
 							<div class="d-flex align-items-center">
 							
-								<h6 class="dz-price text-primary mb-0">£${item.currentPrice}</h6>
+								<h6 class="dz-price text-primary mb-0">${getCurrencySymbol(currencySelected) } ${convertPrice(item.currentPrice, currencySelected)}</h6>
 							</div>
 						</div>
 						<a href="#" class="dz-close removefromcartbutton" data-value="${item.seoUrl}">
@@ -1103,11 +1165,16 @@ let subtotal = 0
 const tempsub = tempdata.map(item =>{
 	subtotal += item.currentPrice
 })
+
+
+
+
+
 // Replace the content of an HTML element (e.g., with id 'data-container')
 $('#generatedcartitems').html(listHTML);
 $('#totalcartitems').text(tempdata.length);
 $('#totalcartitems2').text(tempdata.length);
-$('#subtotalamount').text("£ " + subtotal);
+$('#subtotalamount').text(getCurrencySymbol(currencySelected) + convertPrice(subtotal, currencySelected));
 }
 function generateRandomString(length) {
 	const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -1196,4 +1263,305 @@ selectElement.addEventListener('change', () => {
 
 
 
+let  frameValue = { frameName: "",
+frameNameBig: "",
+frameImage: "",
+priceInch: 0,
+framePriceTotal: 0
 
+} 
+
+
+$(document).ready(function() {
+	// Select the dropdown menu
+	var dropdown = $('#chooseFrameOptions');
+  
+	// Bind the change event to the dropdown
+	dropdown.on('change', function() {
+
+	frameValue = {}
+
+	  // Get the selected value
+	  var selectedValue = $(this).val();
+  
+	  // Get the data-frame-name value from the selected option
+
+
+	  var dataArtName = $(this).find('option:selected').data('frame-artname');
+	  var dataFrameName = $(this).find('option:selected').data('frame-framename');
+	  var dataFrameNameBig = $(this).find('option:selected').data('frame-framenamebig');
+	  var dataFrameImage = $(this).find('option:selected').data('frame-frameimage');
+	  var dataFrameImagepriceInch = $(this).find('option:selected').data('frame-priceinch');
+	  var dataFrameframePriceTotal = $(this).find('option:selected').data('frame-framepricetotal');
+	  var dataFrameframeseourl = $(this).find('option:selected').data('frame-frameseourl');
+
+
+	  // Select the image element
+	  var image = $('#frameOptImages');
+  
+	  console.log(dataFrameName, "framename")
+	  // Set the image src attribute
+	  image.attr('src',"https://s3.tebi.io/cawgallery/90x90-"+ dataFrameImage);
+
+	  $('#frameImageLink').attr('href', "https://s3.tebi.io/cawgallery/90x90-"+ dataFrameImage);
+	  
+
+		frameValue.artName = dataArtName
+		frameValue.frameName = dataFrameName
+		frameValue.frameNameBig = dataFrameNameBig
+		frameValue.frameImage = dataFrameImage
+		frameValue.priceInch = dataFrameImagepriceInch
+		frameValue.framePriceTotal = dataFrameframePriceTotal
+		frameValue.seoUrl = dataFrameframeseourl
+
+
+		$('#framephotoImage').attr('src',"https://s3.tebi.io/cawgallery/"+ dataFrameImage)
+
+		if(frameValue.frameName == undefined || frameValue.frameName == '') {
+
+
+
+			var image = $('#frameOptImages');
+			image.attr('src',"https://s3.tebi.io/cawgallery/90x90-CHOOSEFRAME.jpg");
+			$('#framephotoImage').attr('src',"https://s3.tebi.io/cawgallery/CHOOSEFRAME.jpg")
+			
+	
+			}
+
+
+
+	});
+
+
+$(document).ready(function() {
+		$('#showModalButton').on('click', function() {
+		  $('#imageModal').modal('show');
+		});
+
+
+
+
+	  });
+
+
+	$('.addtocartFrame').on('click', function (e) {
+		// Prevent the default link behavior
+		e.preventDefault();
+		// Get the value from the data attribute
+		var value = frameValue
+
+		handleCartCookie()
+		
+		if(value.frameName == undefined || value.frameName == '') {
+
+
+			let msg = "Please Choose a frame first.";
+
+			let msgDiv = '<div class="gen alert dz-alert alert-danger">' + msg + '</div>';
+			$('.dzSubscribeMsg').html(msgDiv);
+			setTimeout(function () {
+				$('.dzSubscribeMsg .alert').hide(500);
+			}, 1000);
+	
+			return false
+	
+			}
+
+	 
+		  
+
+		console.log(value)
+		// Call your custom function with the value
+		addtocartqueryfetchFrame(value);
+	});
+
+
+
+
+	let  exhibitionItem = { frameName: "",
+		frameNameBig: "",
+		frameImage: "",
+		priceInch: 0,
+		framePriceTotal: 0
+		
+		} 
+
+		
+
+	
+	$('.addExhibitionitemtoCart').on('click', function (e) {
+		// Prevent the default link behavior
+		e.preventDefault();
+		// Get the value from the data attribute
+		var value = exhibitionItem
+
+		handleCartCookie()
+
+		console.log(value)
+
+
+
+		exhibitionItem = {}
+
+		var dataArtName = $(this).data('frame-artname');
+		var dataFrameName = $(this).data('frame-framename');
+		var dataFrameImage = $(this).data('frame-frameimage');
+		var dataFrameNameBig = $(this).data('frame-framenamebig');
+		var dataFrameframePriceTotal = $(this).data('frame-framepricetotal');
+		var dataFrameframeseourl = $(this).data('frame-seourl');
+
+  
+
+		console.log(dataArtName, "dataArtName")
+
+  
+		exhibitionItem.artName = ''
+		exhibitionItem.frameName = ''
+		exhibitionItem.frameNameBig = dataFrameNameBig
+		exhibitionItem.frameImage = dataFrameImage
+		exhibitionItem.priceInch = "dataFrameImagepriceInch"
+		exhibitionItem.framePriceTotal = dataFrameframePriceTotal
+		exhibitionItem.seoUrl = dataFrameframeseourl
+		exhibitionItem.operation =  "addtocart"
+
+		// exhibitionItem = {
+		// 	"artName": "Frustration 10",
+		// 	"frameName": "F101-NBWF",
+		// 	"frameNameBig": "Natural bare wood frame",
+		// 	"frameImage": "F101-NBWF.jpg",
+		// 	"priceInch": 0,
+		// 	"framePriceTotal": 0,
+		// 	"seoUrl": "frustration-10?frameItem=true&frame=F101-NBWF",
+		// 	"operation": "addtocart"
+		// }
+
+		console.log(exhibitionItem)
+
+
+		
+		if(value.frameName == undefined) {
+
+
+			let msg = "Please try agian.";
+
+			let msgDiv = '<div class="gen alert dz-alert alert-danger">' + msg + '</div>';
+			$('.dzSubscribeMsg').html(msgDiv);
+			setTimeout(function () {
+				$('.dzSubscribeMsg .alert').hide(500);
+			}, 1000);
+	
+			return false
+	
+			}
+
+	
+		  
+
+		console.log(exhibitionItem)
+		// Call your custom function with the value
+		addtocartqueryfetchExhibition(exhibitionItem);
+	});
+
+
+
+  });
+
+
+  function addtocartqueryfetchExhibition(value) {
+	console.log("Link clicked with value:", value);
+	// Define the cookie value
+	const addThisItemtoCart = value;
+	// Make a POST request using jQuery's $.post() method
+
+	addThisItemtoCart.operation = "addtocart";
+	$.post("/api/frontendinforaddframe", JSON.stringify( addThisItemtoCart ), function (data) {
+		// Assuming 'data' is an array of objects
+		if (data.status == 1) {
+			
+			msgDiv = '<div class="gen alert dz-alert alert-success">' + data.msg + '</div>';
+			$('.dzSubscribeMsg').html(msgDiv);
+			setTimeout(function () {
+				$('.dzSubscribeMsg .alert').hide(0);
+			}, 5000);
+		}
+		let tempdata = data.items
+		// console.log(data.items)
+		if (Array.isArray(tempdata)) {
+			renderList(tempdata)
+		} else {
+			console.error("Received data is not an array:");
+		}
+	})
+		.fail(function (xhr, status, error) {
+			console.error("Error fetching data:", error);
+		});
+}
+
+
+
+
+  function addtocartqueryfetchFrame(value) {
+	console.log("Link clicked with value:", value);
+	// Define the cookie value
+	const addThisItemtoCart = value;
+	// Make a POST request using jQuery's $.post() method
+
+	addThisItemtoCart.operation = "addtocart";
+	$.post("/api/frontendinforaddframe", JSON.stringify( addThisItemtoCart ), function (data) {
+		// Assuming 'data' is an array of objects
+		if (data.status == 1) {
+			msgDiv = '<div class="gen alert dz-alert alert-success">' + data.msg + '</div>';
+			$('.dzSubscribeMsg').html(msgDiv);
+			setTimeout(function () {
+				$('.dzSubscribeMsg .alert').hide(0);
+			}, 5000);
+		}
+		let tempdata = data.items
+		// console.log(data.items)
+		if (Array.isArray(tempdata)) {
+			renderList(tempdata)
+		} else {
+			console.error("Received data is not an array:");
+		}
+	})
+		.fail(function (xhr, status, error) {
+			console.error("Error fetching data:", error);
+		});
+}
+
+
+
+
+
+
+// Function to get the currency symbol based on the cookie value
+function getCurrencySymbol(currency) {
+
+	if(currencySelected == null){currencySelected = "pound"}
+
+	switch (currency) {
+	  case 'pound':
+		return '£';
+	  case 'dollar':
+		return '$';
+	  case 'euro':
+		return '€';
+	  default:
+		return '£'; // Default to pound
+	}
+  }
+  
+  // Function to convert a price based on the selected currency
+  function convertPrice(price, currency) {
+	// Exchange rates (update these with real-time values)
+	
+	const exchangeRates = {
+	  pound: 1,
+	  dollar: 1.29,
+	  euro: 1.19
+	};
+  
+	const convertedPrice = price * exchangeRates[currency];
+	return Math.round(convertedPrice);
+  }
+  
